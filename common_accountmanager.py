@@ -20,8 +20,8 @@ class CommonAccountManager(object):
         self.name = name
         self.accounts = []
         self.args = args
-        self.apiHashGenerator = cycle(args.hash_key)
-        self.apiLoginHashGenerator = cycle(args.login_hash_key) if args.login_hash_key else None
+        self.apiHashGenerator = args.hash_key
+        self.apiLoginHashGenerator = args.login_hash_key if args.login_hash_key else None
         if "proxy" in self.args and (self.args.proxy is not None or self.args.niantic_banned_proxy is not None):
             self.current_ptc_proxies = self.args.proxy + self.args.niantic_banned_proxy
             log.info("PTC proxies are {}".format(str(self.current_ptc_proxies)))

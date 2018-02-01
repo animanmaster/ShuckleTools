@@ -444,12 +444,12 @@ class Account2(PogoService):
         self.pgoApi.set_position(*position)
 
     def __update_proxies(self, login=False):
-        next_hash = next(self.login_hash_generator) if login and self.login_hash_generator else next(self.hash_generator)
-        goman = next_hash.startswith("PHH")
-        if goman:
-            self.pgoApi.activate_hash_server(next_hash, go_hash=True, gohash_endpoint = 'http://hash.gomanager.biz')
-        else:
-            self.pgoApi.activate_hash_server(next_hash, go_hash=False, hash_endpoint = 'http://pokehash.buddyauth.com')
+        next_hash = self.login_hash_generator if login and self.login_hash_generator else self.hash_generator
+        # goman = next_hash.startswith("PHH")
+        #if goman:
+        #    self.pgoApi.activate_hash_server(next_hash, go_hash=True, gohash_endpoint = 'http://hash.gomanager.biz')
+        #else:
+        self.pgoApi.activate_hash_server(next_hash, go_hash=False, hash_endpoint = 'http://pokehash.buddyauth.com')
 
         if self.ptc_proxy_supplier is not None:
             self.current_ptc_proxy = self.ptc_proxy_supplier(self.current_ptc_proxy)
@@ -939,17 +939,6 @@ class Account2(PogoService):
                 return count
         except KeyError:  # todo align with error handling in general
             self.log.warning("Failed to remove item {}", item_id)
-
-
-class Account3(Account2):
-    def __init__(self, username, password, auth_service, args, search_interval,
-                 rest_interval, hash_generator, login_hash_generator, ptc_proxy_supplier, niantic_proxy_supplier, db_data, account_manager, loop):
-        self.loop = loop
-        Account2.__init__(self, username, password, auth_service, args, search_interval,
-                 rest_interval, hash_generator, login_hash_generator, ptc_proxy_supplier, niantic_proxy_supplier, db_data, account_manager)
-
-    def create_api(self, device_info):
-        return PGoApi(device_info=device_info)
 
 
 class WorkingTimeScheduler(DelegatingPogoService):

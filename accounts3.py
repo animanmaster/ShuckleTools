@@ -11,7 +11,7 @@ from async_accountdbsql import upsert_account, db_consume_lures, db_set_rest_tim
     update_account_level, db_set_system_id, update_allocated, update_allocation_end, db_set_perm_banned, load_accounts
 
 from common_accountmanager import CommonAccountManager
-from pogoservice import Account3
+from pogoservice import Account2
 from scannerutil import auth_service
 from simplecaptcha import handle_captcha_url
 
@@ -81,22 +81,10 @@ class AsyncAccountManager(CommonAccountManager):
             log.info("Account pool " + str(self.name) + " active with " + str(len(self.accounts)) + " accounts")
 
     def add_account(self, account):
-        acct = self.create_async_account(account)
+        acct = self.__create_account_object(account)
         self.accounts.append(acct)
         self.status[acct.username] = acct.status_data()
         return acct
-
-    def create_async_account(self, account):
-        username = account["username"]
-        password = account["password"]
-        auth = auth_service(account)
-
-        created = Account3(username, password, auth, self.args, self.search_interval, self.rest_interval,
-                           self.apiHashGenerator, self.apiLoginHashGenerator, self.ptc_proxy_supplier_to_use(),
-                           self.niantic_proxy_supplier_to_use(), account,
-                           self, self.loop)
-        return created
-
 
     async def acc_update_account(self, account):
         await db_update_account(account)
