@@ -1,21 +1,19 @@
-# Basic docker image for ShuckleTools
+# Basic docker image for levelup.py
 # Usage:
 #   docker build -t shuckletools .
 #   docker run -d -P shuckletools -a ptc -u YOURUSERNAME -p YOURPASSWORD -l "Seattle, WA" -st 10 --gmaps-key CHECKTHEWIKI
 
 FROM python:3.6
 
-# Default port the webserver runs on
-EXPOSE 6767
-
 # Working directory for the application
 WORKDIR /usr/src/app
 
 # Set Entrypoint with hard-coded options
-ENTRYPOINT ["dumb-init", "-r", "15:2", "python3", "./lureparty.py", "--host", "0.0.0.0"]
+ENTRYPOINT ["python3", "./lureparty.py", "--cf", "config.ini"]
 
 # Set default options when container is run without any command line arguments
 CMD ["-h"]
+
 
 COPY requirements.txt /usr/src/app/
 
