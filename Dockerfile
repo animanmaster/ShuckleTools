@@ -15,6 +15,13 @@ ENTRYPOINT ["python3", "./lureparty.py", "--cf", "config.ini"]
 CMD ["-h"]
 
 
+RUN apt-get update && apt-get install -y \
+    git \
+    python3 \
+    python3-pip \
+    mysql-server \
+    mysql-client
+
 COPY requirements.txt /usr/src/app/
 
 RUN apt-get update && apt-get install -y --no-install-recommends build-essential \
@@ -22,6 +29,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends build-essential
  && pip3 install --no-cache-dir -r requirements.txt \
  && apt-get purge -y --auto-remove build-essential \
  && rm -rf /var/lib/apt/lists/*
+
+    
+COPY my.cnf /etc/mysql/
 
 # Copy everything to the working directory (Python files, templates, config) in one go.
 COPY . /usr/src/app/
